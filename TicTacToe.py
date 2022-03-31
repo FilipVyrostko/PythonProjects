@@ -5,7 +5,6 @@ import numpy as np
 
 max_depth = 5
 
-
 class Player:
 
     def __init__(self, name, is_maximizer):
@@ -41,14 +40,11 @@ def main():
     if position != 1 and position != 2:
         print("\nWrong position value entered\n")
         print("Setting position to 1\n")
-        position = 1
 
-    if position == 1:
-        player = Player(name, is_maximizer=True)
-        AI = Player("AI", is_maximizer=False)
-    else:
-        player = Player(name, is_maximizer=False)
-        AI = Player("AI", is_maximizer=True)
+    position = position == 1
+
+    player = Player(name, is_maximizer=position)
+    AI = Player("AI", is_maximizer=not position)
 
     os.system("cls")
     print("Game info: {player1} || {AI}".format(player1=player.__str__(), AI=AI.__str__()))
@@ -58,15 +54,18 @@ def main():
     for i in range(rows):
         board.append(["-"] * columns)
 
+    moves_left = rows * columns
+
     if not player.is_maximizer:
         print("\nAI is making its turn...\n")
         ai_move = find_best_move(board, player.is_maximizer)
         board[ai_move[0]][ai_move[1]] = AI.symbol
         render(board)
+        moves_left -= 1
     else:
         render(board)
 
-    while moves_left(board):
+    while moves_left:
         row = input("Please enter the number of the row you wish to place your symbol in: ")
         col = input("Please enter the number of the column you wish to place your symbol in: ")
 
@@ -99,12 +98,15 @@ def main():
             row, col = int(row) - 1, int(col) - 1
 
         board[row][col] = player.symbol
+        moves_left -= 1
         render(board)
 
-        print("\nAI is making its turn...\n")
-        ai_move = find_best_move(board, AI.is_maximizer)
-        board[ai_move[0]][ai_move[1]] = AI.symbol
-        render(board)
+        if moves_left:
+            print("\nAI is making its turn...\n")
+            ai_move = find_best_move(board, AI.is_maximizer, moves_left)
+            board[ai_move[0]][ai_move[1]] = AI.symbol
+            moves_left -= 1
+            render(board)
 
     score = get_score(board)
     if player.is_maximizer and score > 0 or not player.is_maximizer and score < 0:
@@ -122,19 +124,11 @@ def validate(*args, cast):
         for arg in args:
             cast(arg)
         return True
-    except Exception as E:
+    except:
         return False
 
 
-def moves_left(board):
-    for r in range(0, len(board)):
-        for c in range(0, len(board[0])):
-            if board[r][c] == "-":
-                return True
-    return False
-
-
-def find_best_move(board, is_maximizer):
+def find_best_move(board, is_maximizer, moves_left):
     row = 0
     col = 0
 
@@ -147,8 +141,11 @@ def find_best_move(board, is_maximizer):
 
                     board[r][c] = "X"
 
-                    move_val = max(best_val, minimax(board, depth=max_depth, alpha=(2 ^ 32), beta=-(2 ^ 32), is_maximizer=not is_maximizer))
+                    moves_left -= 1
 
+                    move_val = max(best_val, minimax(board, depth=max_depth, alpha=(2 ^ 32), beta=-(2 ^ 32),
+                                                     is_maximizer=not is_maximizer, moves_left=moves_left))
+                    moves_left += 1
                     board[r][c] = "-"
 
                     if move_val > best_val:
@@ -165,8 +162,11 @@ def find_best_move(board, is_maximizer):
 
                     board[r][c] = "O"
 
-                    move_val = min(best_val, minimax(board, depth=max_depth, alpha=-(2 ^ 32), beta=(2 ^ 32), is_maximizer=not is_maximizer))
+                    moves_left -= 1
 
+                    move_val = min(best_val, minimax(board, depth=max_depth, alpha=-(2 ^ 32), beta=(2 ^ 32),
+                                                     is_maximizer=not is_maximizer, moves_left=moves_left))
+                    moves_left += 1
                     board[r][c] = "-"
 
                     if move_val < best_val:
@@ -177,8 +177,9 @@ def find_best_move(board, is_maximizer):
     return [row, col]
 
 
-def minimax(board, depth, alpha, beta, is_maximizer):
-    if not moves_left(board) or depth == 0:
+def minimax(board, depth, alpha, beta, is_maximizer, moves_left):
+
+    if not moves_left or depth == 0:
         return get_score(board)
 
     if is_maximizer:
@@ -189,8 +190,11 @@ def minimax(board, depth, alpha, beta, is_maximizer):
                 if board[r][c] == "-":
                     board[r][c] = "X"
 
-                    best_val = max(best_val, minimax(board, depth - 1, alpha, beta, not is_maximizer))
+                    moves_left -= 1
 
+                    best_val = max(best_val, minimax(board, depth - 1, alpha, beta, not is_maximizer, moves_left))
+
+                    moves_left += 1
                     board[r][c] = "-"
 
                     alpha = max(alpha, best_val)
@@ -204,9 +208,11 @@ def minimax(board, depth, alpha, beta, is_maximizer):
             for c in range(0, len(board[0])):
                 if board[r][c] == "-":
                     board[r][c] = "O"
+                    moves_left -= 1
 
-                    best_val = min(best_val, minimax(board, depth - 1, alpha, beta, not is_maximizer))
+                    best_val = min(best_val, minimax(board, depth - 1, alpha, beta, not is_maximizer, moves_left))
 
+                    moves_left += 1
                     board[r][c] = "-"
 
                     beta = min(beta, best_val)
