@@ -25,7 +25,7 @@ def find_best_move(board, is_maximizer, moves_left) -> list:
                     moves_left += 1
                     board[row][col] = "-"
 
-                    if move_val > best_val:
+                    if move_val >= best_val:
                         best_row = row
                         best_col = col
                         best_val = move_val
@@ -48,8 +48,8 @@ def find_best_move(board, is_maximizer, moves_left) -> list:
                     moves_left += 1
                     board[row][col] = "-"
 
-                    if move_val < best_val:
-                        row = row
+                    if move_val <= best_val:
+                        best_row = row
                         best_col = col
                         best_val = move_val
 
@@ -58,7 +58,7 @@ def find_best_move(board, is_maximizer, moves_left) -> list:
 
 def minimax(board, depth, alpha, beta, is_maximizer, moves_left) -> int:
     if not moves_left or depth == 0:
-        return utils.get_score(board)
+        return utils.get_score(board, False)
 
     if is_maximizer:
         best_val: int = -(2 ^ 32)

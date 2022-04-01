@@ -74,53 +74,104 @@ def validate(*args, cast) -> bool:
         return False
 
 
-def get_score(board: list) -> int:
+def get_score(board: list, strikeout: bool) -> int:
     score = 0
 
-    col: int = len(board[0])  # Number of columns
-    row: int = len(board)  # Number of rows
+    strikeout_x: str = 'X' + '\u0336'
+    strikeout_o: str = 'O' + '\u0336'
+
+    b_col: int = len(board[0])  # Number of columns
+    b_row: int = len(board)  # Number of rows
 
     # Check rows
-    for row in range(0, row):
-        for col in range(1, col - 1):
+    for row in range(0, b_row):
+        for col in range(1, b_col - 1):
             if board[row][col - 1] == "X" and board[row][col] == "X" and board[row][col + 1] == "X":
+                if strikeout:
+                    # Add strikeout for X
+                    board[row][col - 1], board[row][col], board[row][col + 1] = strikeout_x, strikeout_x, strikeout_x
+
                 score += 10
             elif board[row][col - 1] == "O" and board[row][col] == "O" and board[row][col + 1] == "O":
+
+                if strikeout:
+                    # Add strikeout for O
+                    board[row][col - 1], board[row][col], board[row][col + 1] = strikeout_o, strikeout_o, strikeout_o
+
                 score -= 10
 
     # Check columns
-    for row in range(1, row - 1):
-        for col in range(0, col):
+    for col in range(0, b_col):
+        for row in range(1, b_row - 1):
             if board[row - 1][col] == "X" and board[row][col] == "X" and board[row + 1][col] == "X":
+
+                if strikeout:
+                    # Add strikeout for X
+                    board[row - 1][col], board[row][col], board[row + 1][col] = strikeout_x, strikeout_x, strikeout_x
+
                 score += 10
             elif board[row - 1][col] == "O" and board[row][col] == "O" and board[row + 1][col] == "O":
+
+                if strikeout:
+                    # Add strikeout for O
+                    board[row - 1][col], board[row][col], board[row + 1][col] = strikeout_o, strikeout_o, strikeout_o
+
                 score -= 10
 
     # Check diagonal (both ways)
-    for row in range(1, row - 1):
-        for col in range(1, col - 1):
+    for row in range(1, b_row - 1):
+        for col in range(1, b_col - 1):
 
+            # Check diagonal left to right
             if board[row - 1][col - 1] == "X" and board[row][col] == "X" and board[row + 1][col + 1] == "X":
+
+                if strikeout:
+                    # Add strikeout for X
+                    board[row - 1][col - 1], board[row][col], board[row + 1][col + 1] = \
+                        strikeout_x, strikeout_x, strikeout_x
+
                 score += 10
             elif board[row - 1][col - 1] == "O" and board[row][col] == "O" and board[row + 1][col + 1] == "O":
+
+                if strikeout:
+                    # Add strikeout for O
+                    board[row - 1][col - 1], board[row][col], board[row + 1][col + 1] = \
+                        strikeout_o, strikeout_o, strikeout_o
+
                 score -= 10
 
+            # Check diagonal right to left
             if board[row - 1][col + 1] == "X" and board[row][col] == "X" and board[row + 1][col - 1] == "X":
+
+                if strikeout:
+                    # Add strikeout for X
+                    board[row - 1][col + 1], board[row][col], board[row + 1][col - 1] = \
+                        strikeout_x, strikeout_x, strikeout_x
+
                 score += 10
             elif board[row - 1][col + 1] == "O" and board[row][col] == "O" and board[row + 1][col - 1] == "O":
+
+                if strikeout:
+                    # Add strikeout for O
+                    board[row - 1][col + 1], board[row][col], board[row + 1][col - 1] = \
+                        strikeout_o, strikeout_o, strikeout_o
+
                 score -= 10
 
     return score
 
 
-def print_score(board, player, AI) -> None:
-    score = get_score(board)
+def print_score(score, board, player, AI) -> None:
+    os.system("cls")
+
     if player.is_maximizer and score > 0 or not player.is_maximizer and score < 0:
         print(f"Congratulations! You have won! Score: {abs(score)}")
     elif AI.is_maximizer and score > 0 or not AI.is_maximizer and score < 0:
         print(f"AI has won. Final score: {abs(score)}")
     else:
         print("It's a Draw.")
+
+    render(board)
 
 
 def render(board) -> None:
