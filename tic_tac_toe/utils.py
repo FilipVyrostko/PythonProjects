@@ -161,12 +161,12 @@ def get_score(board: list, strikeout: bool) -> int:
     return score
 
 
-def print_score(score, board, player, AI) -> None:
+def print_score(score, board, player: dict, AI: dict) -> None:
     os.system("cls")
 
-    if player.is_maximizer and score > 0 or not player.is_maximizer and score < 0:
+    if player["is_maximizer"] and score > 0 or not player["is_maximizer"] and score < 0:
         print(f"Congratulations! You have won! Score: {abs(score)}")
-    elif AI.is_maximizer and score > 0 or not AI.is_maximizer and score < 0:
+    elif AI["is_maximizer"] and score > 0 or not AI["is_maximizer"] and score < 0:
         print(f"AI has won. Final score: {abs(score)}")
     else:
         print("It's a Draw.")
