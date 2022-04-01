@@ -1,5 +1,5 @@
-import requests
 import time
+import requests
 from random_word import RandomWords
 from bs4 import BeautifulSoup
 
@@ -15,14 +15,14 @@ def generate_link(rwg):
     print("\n\tGenerating article...\n")
     random_word = rwg.get_random_word()
 
-    r = requests.get(url=HOST + "/wiki/" + random_word)
+    req = requests.get(url=HOST + "/wiki/" + random_word)
 
     # If random word does not have a link, try new
-    while not r.ok:
+    while not req.ok:
         random_word = rwg.get_random_word()
-        r = requests.get(url=HOST + "/wiki/" + random_word)
+        req = requests.get(url=HOST + "/wiki/" + random_word)
 
-    return r, random_word
+    return req, random_word
 
 
 def main():
@@ -33,15 +33,19 @@ def main():
     # Generate random word
     rwg = RandomWords()
 
-    r, random_word = generate_link(rwg)
+    req, random_word = generate_link(rwg)
 
     while input(f"Are you happy with article about '{random_word}' [y/n]? ") != "y":
-        r, random_word = generate_link(rwg)
+        req, random_word = generate_link(rwg)
 
-    content_div = BeautifulSoup(r.content, features="lxml").body.find('div', attrs={'id': 'mw-content-text'})
+    content_div = BeautifulSoup(req.content, features="lxml"). \
+        body.find('div', attrs={'id': 'mw-content-text'})
 
-    unwanted_tags = ["img", "table", ("div", {"class": "printfooter"}), ("a", {"class": "external text"}),
-                     ("div", {"class": "reflist"})]
+    unwanted_tags = ["img", "table",
+                     ("div", {"class": "printfooter"}),
+                     ("a", {"class": "external text"}),
+                     ("div", {"class": "reflist"}),
+                     ]
 
     for tag in unwanted_tags:
 
