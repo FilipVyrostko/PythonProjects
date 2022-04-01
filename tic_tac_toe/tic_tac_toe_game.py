@@ -15,11 +15,11 @@ class Player:
         else:
             self.symbol = "O"
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"Player Name: {self.name} -- Player Symbol: {self.symbol}"
 
 
-def main():
+def main() -> int:
     name, rows, columns, position = utils.get_user_settings()
 
     position = position == 1
@@ -31,11 +31,11 @@ def main():
     print(f"Game info: {player.__str__()} || {AI.__str__()}")
 
     # Initializing board
-    board = []
+    board: list = []
     for i in range(rows):
         board.append(["-"] * columns)
 
-    moves_left = rows * columns
+    moves_left: int = rows * columns
 
     if not player.is_maximizer:
         print("\nAI is making its turn...\n")

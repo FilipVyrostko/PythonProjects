@@ -5,7 +5,7 @@ import time
 import numpy as np
 
 
-def get_user_settings():
+def get_user_settings() -> tuple:
     print("\nWELCOME TO GAME OF TIC TAC TOE\n")
     name = input("Please, enter your name: ")
     rows = input("Please enter the number of rows of the board: ")
@@ -30,7 +30,7 @@ def get_user_settings():
     return name, rows, columns, position
 
 
-def get_user_move(rows, columns, board):
+def get_user_move(rows, columns, board) -> tuple:
     row = input("Please enter the number of the row you wish to place your symbol in: ")
     col = input("Please enter the number of the column you wish to place your symbol in: ")
 
@@ -65,7 +65,7 @@ def get_user_move(rows, columns, board):
     return row, col
 
 
-def validate(*args, cast):
+def validate(*args, cast) -> bool:
     try:
         for arg in args:
             cast(arg)
@@ -74,11 +74,11 @@ def validate(*args, cast):
         return False
 
 
-def get_score(board):
+def get_score(board: list) -> int:
     score = 0
 
-    col = len(board[0])  # Number of columns
-    row = len(board)  # Number of rows
+    col: int = len(board[0])  # Number of columns
+    row: int = len(board)  # Number of rows
 
     # Check rows
     for row in range(0, row):
@@ -113,7 +113,7 @@ def get_score(board):
     return score
 
 
-def print_score(board, player, AI):
+def print_score(board, player, AI) -> None:
     score = get_score(board)
     if player.is_maximizer and score > 0 or not player.is_maximizer and score < 0:
         print(f"Congratulations! You have won! Score: {abs(score)}")
@@ -123,7 +123,7 @@ def print_score(board, player, AI):
         print("It's a Draw.")
 
 
-def render(board):
+def render(board) -> None:
     time.sleep(2)
     os.system("cls")
     matrix = np.array(board)

@@ -3,12 +3,12 @@ from tic_tac_toe import utils
 MAX_DEPTH = 5
 
 
-def find_best_move(board, is_maximizer, moves_left):
-    best_row = 0
-    best_col = 0
+def find_best_move(board, is_maximizer, moves_left) -> list:
+    best_row: int = 0
+    best_col: int = 0
 
     if is_maximizer:
-        best_val = -(2 ^ 32)
+        best_val: int = -(2 ^ 32)
 
         for row in range(0, len(board)):
             for col in range(0, len(board[0])):
@@ -31,7 +31,7 @@ def find_best_move(board, is_maximizer, moves_left):
                         best_val = move_val
 
     else:
-        best_val = (2 ^ 32)
+        best_val: int = (2 ^ 32)
 
         for row in range(0, len(board)):
             for col in range(0, len(board[0])):
@@ -56,12 +56,12 @@ def find_best_move(board, is_maximizer, moves_left):
     return [best_row, best_col]
 
 
-def minimax(board, depth, alpha, beta, is_maximizer, moves_left):
+def minimax(board, depth, alpha, beta, is_maximizer, moves_left) -> int:
     if not moves_left or depth == 0:
         return utils.get_score(board)
 
     if is_maximizer:
-        best_val = -(2 ^ 32)
+        best_val: int = -(2 ^ 32)
 
         for row in range(0, len(board)):
             for col in range(0, len(board[0])):
@@ -79,12 +79,12 @@ def minimax(board, depth, alpha, beta, is_maximizer, moves_left):
 
                     alpha = max(alpha, best_val)
                     if beta <= alpha:
-                        return utils.get_score(board)
+                        return best_val
 
-        return utils.get_score(board)
+        return best_val
 
     else:
-        best_val = (2 ^ 32)
+        best_val: int = (2 ^ 32)
 
         for row in range(0, len(board)):
             for col in range(0, len(board[0])):
@@ -99,8 +99,6 @@ def minimax(board, depth, alpha, beta, is_maximizer, moves_left):
 
                     beta = min(beta, best_val)
                     if beta <= alpha:
-                        return utils.get_score(board)
+                        return best_val
 
-        return utils.get_score(board)
-
-    return best_val
+        return best_val
