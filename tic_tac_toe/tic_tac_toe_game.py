@@ -29,10 +29,9 @@ def main() -> int:
 
         # Check if new placement causes strikeout
         score += utils.get_score(board, True)
-        utils.render(board)
         moves_left -= 1
-    else:
-        utils.render(board)
+
+    utils.render(board)
 
     while moves_left:
 
