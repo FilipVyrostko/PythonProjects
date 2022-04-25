@@ -4,7 +4,6 @@ from random_word import RandomWords
 from bs4 import BeautifulSoup
 
 HOST = "https://wikipedia.org"
-PORT = 80
 
 
 def wait():
